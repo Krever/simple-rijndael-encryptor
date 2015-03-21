@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="szyfrator.controller.EncryptController">
+    <columnConstraints>
+        <ColumnConstraints halignment="CENTER" hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="NEVER" maxWidth="181.0" minWidth="10.0" prefWidth="86.0" />
+      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="181.0" minWidth="0.0" prefWidth="8.0" />
+        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="212.0" minWidth="204.0" prefWidth="204.0" />
+      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" prefWidth="30.0" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" valignment="CENTER" vgrow="ALWAYS" />
+        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" valignment="CENTER" vgrow="ALWAYS" />
+        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" valignment="CENTER" vgrow="ALWAYS" />
+        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" valignment="CENTER" vgrow="ALWAYS" />
+        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" valignment="CENTER" vgrow="ALWAYS" />
+        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="15.0" valignment="CENTER" vgrow="ALWAYS" />
+        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="CENTER" vgrow="ALWAYS" />
+      <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="15.0" valignment="CENTER" vgrow="ALWAYS" />
+    </rowConstraints>
+    <children>
+        <Label text="Tryb" GridPane.rowIndex="1" />
+        <Label text="Dł. klucza" GridPane.rowIndex="2" />
+        <Label text="Dł. bloku" GridPane.rowIndex="3" />
+        <ComboBox fx:id="encryptionModeCombo" prefWidth="80.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+        <ComboBox fx:id="keyLengthCombo" prefWidth="80.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+        <Button mnemonicParsing="false" onAction="#encrypt" text="Szyfruj" GridPane.columnIndex="3" GridPane.rowIndex="6" />
+        <ComboBox fx:id="blockLengthCombo" editable="false" prefWidth="80.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+      <TextField fx:id="segmentLengthField" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="80.0" GridPane.columnIndex="1" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.vgrow="NEVER" />
+      <Separator orientation="VERTICAL" prefHeight="200.0" GridPane.columnIndex="2" GridPane.rowSpan="6" />
+      <Label text="Użytkownicy:" GridPane.columnIndex="3" />
+      <ListView fx:id="userList" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="1" GridPane.rowSpan="4" />
+      <Label text="Dł. segmentu" GridPane.rowIndex="4" />
+      <Button onAction="#addUser" mnemonicParsing="false" prefWidth="25.0" text="+" GridPane.columnIndex="4" GridPane.rowIndex="1" GridPane.valignment="TOP" />
+      <Button onAction="#removeUser" mnemonicParsing="false" prefWidth="25.0" text="-" GridPane.columnIndex="4" GridPane.rowIndex="2" GridPane.valignment="TOP" />
+    </children>
+</GridPane>

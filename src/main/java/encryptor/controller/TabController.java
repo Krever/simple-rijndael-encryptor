@@ -1,4 +1,4 @@
-package szyfrator.controller;
+package encryptor.controller;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -9,7 +9,7 @@ import javafx.beans.property.StringProperty;
 public class TabController {
 
     protected StringProperty inputFilePathProperty = new SimpleStringProperty();
-    protected StringProperty outputFilePathProperty = new SimpleStringProperty();;
+    protected StringProperty outputFilePathProperty = new SimpleStringProperty();
 
     public void bindInputFile(StringProperty pathProperty) {
         inputFilePathProperty.bindBidirectional(pathProperty);

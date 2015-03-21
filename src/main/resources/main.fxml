@@ -1,50 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="350.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="szyfrator.controller.MainController">
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+            minWidth="-Infinity"
+            prefHeight="350.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/8.0.40"
+            fx:controller="encryptor.controller.MainController">
     <center>
         <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
             <children>
                 <GridPane>
                     <columnConstraints>
-                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="391.0" minWidth="87.0" prefWidth="87.0" />
-                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="410.0" minWidth="10.0" prefWidth="410.0" />
-                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="66.0" minWidth="66.0" prefWidth="66.0" />
-                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="37.0" minWidth="37.0" prefWidth="37.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="-Infinity" minWidth="-Infinity"
+                                           prefWidth="120.0"/>
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="400.0"/>
+                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="-Infinity" minWidth="-Infinity"
+                                           prefWidth="75.0"/>
+                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="37.0" minWidth="37.0"
+                                           prefWidth="37.0"/>
                     </columnConstraints>
                     <rowConstraints>
-                        <RowConstraints maxHeight="60.0" minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="31.0" minHeight="0.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="60.0" minHeight="10.0" prefHeight="30.0" valignment="CENTER"
+                                        vgrow="SOMETIMES"/>
+                        <RowConstraints maxHeight="31.0" minHeight="0.0" prefHeight="30.0" valignment="CENTER"
+                                        vgrow="SOMETIMES"/>
                     </rowConstraints>
                     <children>
-                        <Label text="Plik wejściowy" />
-                        <Label text="Plik wyjściowy" GridPane.rowIndex="1" />
-                        <TextField fx:id="inputFileField" GridPane.columnIndex="1" />
-                        <TextField fx:id="outputFileField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <Button mnemonicParsing="false" onAction="#selectInputFile" text="Wybierz" GridPane.columnIndex="2" />
-                        <Button mnemonicParsing="false" onAction="#selectOutputFile" text="Wybierz" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                        <Button mnemonicParsing="false" onAction="#switchFiles" prefHeight="50.0" prefWidth="24.0" style="-fx-padding: 0;" text="⇅" GridPane.columnIndex="3" GridPane.rowSpan="2">
+                        <Label text="%main.inputFile"/>
+                        <Label text="%main.outputFile" GridPane.rowIndex="1"/>
+                        <TextField fx:id="inputFileField" GridPane.columnIndex="1"/>
+                        <TextField fx:id="outputFileField" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                        <Button mnemonicParsing="false" onAction="#selectInputFile" text="%general.selectFile"
+                                GridPane.columnIndex="2"/>
+                        <Button mnemonicParsing="false" onAction="#selectOutputFile" text="%general.selectFile"
+                                GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+                        <Button mnemonicParsing="false" onAction="#switchFiles" prefHeight="50.0" prefWidth="24.0"
+                                style="-fx-padding: 0;" text="⇅" GridPane.columnIndex="3" GridPane.rowSpan="2">
                             <font>
-                                <Font size="31.0" />
+                                <Font size="31.0"/>
                             </font>
                         </Button>
                     </children>
                 </GridPane>
                 <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
                     <tabs>
-                        <Tab text="Szyfrowanie">
+                        <Tab text="%main.tabs.encryption">
                             <content>
-                                <fx:include fx:id="encryptTab" source="encrypt.fxml" />
+                                <fx:include fx:id="encryptTab" source="encrypt.fxml"/>
                             </content>
                         </Tab>
-                        <Tab text="Deszyfrowanie">
+                        <Tab text="%main.tabs.decryption">
                             <content>
-                                <fx:include fx:id="decryptTab" source="decrypt.fxml" />
+                                <fx:include fx:id="decryptTab" source="decrypt.fxml"/>
                             </content>
                         </Tab>
                     </tabs>
@@ -52,15 +60,16 @@
             </children>
         </VBox>
     </center>
-   <top>
-      <MenuBar BorderPane.alignment="CENTER">
-        <menus>
-          <Menu mnemonicParsing="false" text="Klucze">
-            <items>
-              <MenuItem onAction="#generateKeys" mnemonicParsing="false" text="Wygeneruj klucz" />
-            </items>
-          </Menu>
-        </menus>
-      </MenuBar>
-   </top>
+    <top>
+        <MenuBar BorderPane.alignment="CENTER">
+            <menus>
+                <Menu mnemonicParsing="false" text="%menu.keys">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#generateKeys" text="%menu.keys.generateKeys"/>
+                        <MenuItem mnemonicParsing="false" onAction="#showKeybaseWindow" text="%menu.keys.keybase"/>
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+    </top>
 </BorderPane>

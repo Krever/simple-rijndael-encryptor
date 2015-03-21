@@ -1,7 +1,6 @@
-package szyfrator.model;
+package encryptor.model;
 
 import javax.xml.bind.annotation.*;
-import java.util.Arrays;
 import java.util.List;
 
 

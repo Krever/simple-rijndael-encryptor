@@ -1,4 +1,4 @@
-package szyfrator.util;
+package encryptor.util;
 
 import java.security.SecureRandom;
 

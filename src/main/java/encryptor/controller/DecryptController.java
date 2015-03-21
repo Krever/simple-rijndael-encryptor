@@ -1,12 +1,13 @@
-package szyfrator.controller;
+package encryptor.controller;
 
+import encryptor.model.EncryptedFileHeader;
+import encryptor.model.UserAccess;
+import encryptor.util.MyLogger;
+import encryptor.util.RSAKeyFilesUtil;
+import encryptor.util.RSAUtil;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import szyfrator.model.EncryptedFileHeader;
-import szyfrator.model.UserAccess;
-import szyfrator.util.MyLogger;
-import szyfrator.util.RSAUtil;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -67,7 +68,7 @@ public class DecryptController extends TabController {
             FileInputStream inputStream = new FileInputStream(inputFile);
             String xmlHeader = readXmlHeader(inputStream);
 
-            PrivateKey privateKey = RSAUtil.loadPrivateKey(new File(privateKeyFileField.getText()), passwordField.getText());
+            PrivateKey privateKey = RSAKeyFilesUtil.loadPrivateKey(privateKeyFileField.getText(), passwordField.getText());
 
             UserAccess userAccess = identifierCombo.getValue();
             byte[] sessionKey = RSAUtil.decryptSessionKey(userAccess.getSessionKey(), privateKey);

@@ -1,4 +1,4 @@
-package szyfrator.util;
+package encryptor.util;
 
 import java.io.*;
 import java.security.*;
@@ -8,7 +8,7 @@ import java.security.spec.X509EncodedKeySpec;
 /**
  * Created by Wojtek on 2015-03-15.
  */
-public class RSAKeyUtil {
+public class RSAKeyFilesUtil {
 
     public static KeyPair generateKeyPair() {
         try {
@@ -48,7 +48,7 @@ public class RSAKeyUtil {
         }
     }
 
-    public static PublicKey loadPublicKey(PublicKey aPublic, String filePath) {
+    public static PublicKey loadPublicKey(String filePath) {
         try {
             File f = new File(filePath);
             FileInputStream fis = new FileInputStream(f);
@@ -66,7 +66,7 @@ public class RSAKeyUtil {
         }
     }
 
-    public static PrivateKey loadPrivateKey(PrivateKey aPrivate, String filePath) {
+    public static PrivateKey loadPrivateKey(String filePath, String password) {
         try {
             File f = new File(filePath);
             FileInputStream fis = new FileInputStream(f);

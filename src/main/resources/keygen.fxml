@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
-<?import java.lang.*?>
 <?import javafx.scene.layout.*?>
-
-<GridPane prefHeight="149.0" prefWidth="356.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="szyfrator.controller.KeygenController">
+<GridPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="149.0" prefWidth="356.0" xmlns="http://javafx.com/javafx/8"
+          fx:controller="encryptor.controller.KeygenController">
   <columnConstraints>
     <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="171.0" minWidth="10.0" prefWidth="141.0" />

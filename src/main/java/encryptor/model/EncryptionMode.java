@@ -1,4 +1,4 @@
-package szyfrator.model;
+package encryptor.model;
 
 /**
  * Created by Wojtek on 2015-03-07.

@@ -1,9 +1,9 @@
-package szyfrator.controller;
+package encryptor.controller;
 
+import encryptor.util.RSAKeyFilesUtil;
 import javafx.concurrent.Task;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
-import szyfrator.util.RSAKeyUtil;
 
 import java.io.File;
 import java.security.KeyPair;
@@ -39,9 +39,9 @@ public class KeygenController {
         Task<Void> task = new Task<Void>() {
             @Override
             public Void call(){
-                KeyPair keyPair = RSAKeyUtil.generateKeyPair();
-                RSAKeyUtil.savePublicKey(keyPair.getPublic(), publicKeyFileField.getText());
-                RSAKeyUtil.savePrivateKey(keyPair.getPrivate(), privateKeyFileField.getText());
+                KeyPair keyPair = RSAKeyFilesUtil.generateKeyPair();
+                RSAKeyFilesUtil.savePublicKey(keyPair.getPublic(), publicKeyFileField.getText());
+                RSAKeyFilesUtil.savePrivateKey(keyPair.getPrivate(), privateKeyFileField.getText());
                 return null;
             }
         };

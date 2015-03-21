@@ -1,4 +1,4 @@
-package szyfrator.model;
+package encryptor.model;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;

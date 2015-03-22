@@ -24,7 +24,6 @@ import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static java.util.stream.Collectors.toList;
@@ -87,26 +86,22 @@ public class EncryptController extends TabController implements Initializable {
             jaxbMarshaller.marshal(header, System.out);
         } catch (Exception e) {
             log.error("Error occured during writing file header.", e);
-            AlertUtil.showErrorI18n(Optional.<String>empty(), Optional.<String>empty());
+            AlertUtil.showGenericError();
             return;
         }
 
-        try (BufferedWriter out = new BufferedWriter(new FileWriter(outputFile, true));
-             FileInputStream in = new FileInputStream(inputFile)) {
-            int bite;
-            while ((bite = in.read()) != -1) {
-                out.write(bite);
-            }
+        try {
+            Rijndael.encryptFile(inputFile, outputFile, header);
         } catch (IOException e) {
             log.error("Error occured during writing encrypted file content.", e);
-            AlertUtil.showErrorI18n(Optional.<String>empty(), Optional.<String>empty());
+            AlertUtil.showGenericError();
             return;
         }
 
     }
 
     public void reloadKeys() {
-        keyBaseDao.reloadKeyBase();
+        keyBaseDao.refreshKeys();
         val keys = keyBaseDao.getKeys();
         ArrayList<UserKey> receivers = new ArrayList<>(receiverList.getItems().filtered(keys::contains));
         val notReceivers = keys.stream().filter(k -> !receivers.contains(k)).collect(toList());

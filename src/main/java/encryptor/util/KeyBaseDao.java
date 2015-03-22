@@ -22,7 +22,7 @@ public class KeyBaseDao {
 
     private final ObservableSet<UserKey> keyBase = FXCollections.observableSet();
 
-    public void reloadKeyBase() {
+    public void refreshKeys() {
         final File baseDir = new File(keyBaseDirPath);
         if (!baseDir.exists())
             baseDir.mkdirs();
@@ -36,7 +36,7 @@ public class KeyBaseDao {
                 try {
                     keyBase.add(new UserKey(subDir.getName(), publicKey.getAbsolutePath()));
                 } catch (Exception e) {
-                    log.debug("Failed to load key from" + subDir.getName(), e);
+                    log.error("Failed to load key from" + subDir.getName(), e);
                 }
 
             }
@@ -56,7 +56,7 @@ public class KeyBaseDao {
                 try {
                     FileUtils.deleteDirectory(dir);
                 } catch (IOException e) {
-                    log.debug("File cannot be deleted", e);
+                    log.error("File cannot be deleted", e);
                 }
             }
         }
@@ -64,11 +64,16 @@ public class KeyBaseDao {
     }
 
     public void addKey(UserKey userKey) {
-        File baseDir = new File(keyBaseDirPath);
-        File dir = new File(baseDir, userKey.getIdentifier());
-        dir.mkdirs();
-        File key = new File(dir, publicKeyFileName);
-        RSAKeyFilesUtil.savePublicKey(userKey.getPublicKey(), key.getAbsolutePath());
-        keyBase.add(userKey);
+        try {
+            File baseDir = new File(keyBaseDirPath);
+            File dir = new File(baseDir, userKey.getIdentifier());
+            dir.mkdirs();
+            File key = new File(dir, publicKeyFileName);
+            RSAKeyFilesUtil.savePublicKey(userKey.getPublicKey(), key.getAbsolutePath());
+            keyBase.add(userKey);
+        } catch (Exception e) {
+            log.error("Error occured durring key addition.", e);
+            AlertUtil.showGenericError();
+        }
     }
 }

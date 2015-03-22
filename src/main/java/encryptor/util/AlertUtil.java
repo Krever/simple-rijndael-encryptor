@@ -25,4 +25,8 @@ public class AlertUtil {
         showError(title, header, content);
     }
 
+    public static void showGenericError() {
+        showErrorI18n(Optional.<String>empty(), Optional.<String>empty());
+    }
+
 }

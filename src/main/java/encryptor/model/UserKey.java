@@ -3,6 +3,7 @@ package encryptor.model;
 import encryptor.util.RSAKeyFilesUtil;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Objects;
@@ -19,7 +20,7 @@ public class UserKey {
     public UserKey(){
     }
 
-    public UserKey(String identifier, String publicKeyFilePath) throws IOException, InvalidKeySpecException {
+    public UserKey(String identifier, String publicKeyFilePath) throws IOException, InvalidKeySpecException, NoSuchAlgorithmException {
         this.identifier = identifier;
         this.publicKey = RSAKeyFilesUtil.loadPublicKey(publicKeyFilePath);
     }

@@ -19,7 +19,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
         Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("main.fxml"), I18n.resourceBundle);
-        primaryStage.setTitle("De/Szyfrator");
+        primaryStage.setTitle(I18n.resourceBundle.getString("main.title"));
         primaryStage.setScene(new Scene(root, 650, 380));
         primaryStage.show();
     }

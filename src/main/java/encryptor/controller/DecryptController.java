@@ -3,10 +3,9 @@ package encryptor.controller;
 import encryptor.model.EncryptedFileHeader;
 import encryptor.model.UserAccess;
 import encryptor.util.AlertUtil;
-import encryptor.util.I18n;
 import encryptor.util.RSAKeyFilesUtil;
 import encryptor.util.RSAUtil;
-import javafx.scene.control.Alert;
+import encryptor.util.Rijndael;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -30,26 +29,14 @@ public class DecryptController extends TabController {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     public void reloadIdentifiers() {
-
         File inputFile = new File(inputFilePathProperty.getValue());
-
-        String xmlHeader;
-        try {
-            FileInputStream inputStream = new FileInputStream(inputFile);
-            xmlHeader = readXmlHeader(inputStream);
-        } catch (Exception e) {
-            log.error("Error occured durring reading file header.", e);
-            AlertUtil.showErrorI18n(Optional.<String>empty(), Optional.<String>empty());
-            return;
-        }
-
         EncryptedFileHeader encryptedFileHeader;
         try {
-            encryptedFileHeader = parseEncryptedFileHeader(xmlHeader);
+            encryptedFileHeader = readHeader(inputFile);
             System.out.println(encryptedFileHeader);
         } catch (Exception e) {
-            log.error("Error occured during parsing of file header", e);
-            AlertUtil.showErrorI18n(Optional.<String>empty(), Optional.<String>empty());
+            log.error("Error occured during reading file header", e);
+            AlertUtil.showGenericError();
             return;
         }
 
@@ -63,65 +50,39 @@ public class DecryptController extends TabController {
         try {
             File inputFile = new File(inputFilePathProperty.getValue());
 
-            FileInputStream inputStream = new FileInputStream(inputFile);
-            String xmlHeader = readXmlHeader(inputStream);
-
+            EncryptedFileHeader header = readHeader(inputFile);
             PrivateKey privateKey = RSAKeyFilesUtil.loadPrivateKey(privateKeyFileField.getText(), passwordField.getText());
-
             UserAccess userAccess = identifierCombo.getValue();
             byte[] sessionKey = RSAUtil.decryptSessionKey(userAccess.getSessionKey(), privateKey);
 
-            EncryptedFileHeader encryptedFileHeader = parseEncryptedFileHeader(xmlHeader);
             File outputFile = new File(outputFilePathProperty.getValue());
-            rewriteData(inputFile, outputFile); //TODO
+            Rijndael.decrypt(inputFile, outputFile, sessionKey, header);
 
         } catch (Exception e) {
             log.error("Error occured during decryption", e);
-            AlertUtil.showErrorI18n(Optional.<String>empty(), Optional.<String>empty());
+            AlertUtil.showGenericError();
         }
 
     }
 
-    private EncryptedFileHeader parseEncryptedFileHeader(String xmlHeader) throws JAXBException {
-
-        EncryptedFileHeader encryptedFileHeader;
-        JAXBContext jaxbContext = JAXBContext.newInstance(EncryptedFileHeader.class);
-        Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-        encryptedFileHeader = (EncryptedFileHeader) jaxbUnmarshaller.unmarshal(new StringReader(xmlHeader));
-        return encryptedFileHeader;
-    }
-
-    private void rewriteData(File inputFile, File outputFile) throws IOException {
-        try (FileOutputStream outputStream = new FileOutputStream(outputFile);
-             FileInputStream inputStream = new FileInputStream(inputFile);
-             BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
-            int bite;
-            String line;
-            boolean headerPassed = false;
-            while (true) {
-                if (!headerPassed) {
-                    line = br.readLine();
-                    if (line.startsWith("</encryptedFile>")) headerPassed = true;
-                } else {
-                    bite = br.read();
-                    if (bite == -1) break;
-                    outputStream.write(bite);
-                }
-
-            }
-        }
-    }
-
-    private String readXmlHeader(FileInputStream inputStream) throws IOException {
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
+    private EncryptedFileHeader readHeader(File inputFile) throws IOException, JAXBException {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(inputFile)))) {
             String line;
             StringBuilder buffer = new StringBuilder();
             while (true) {
                 line = br.readLine();
                 buffer.append(line).append("\n");
-                if (line.startsWith("</encryptedFileHeader>")) break;
+                if (line.startsWith(EncryptedFileHeader.END_TAG)) break;
             }
-            return buffer.toString();
+            return parseHeader(buffer.toString());
         }
+    }
+
+    private EncryptedFileHeader parseHeader(String xmlHeader) throws JAXBException {
+        EncryptedFileHeader encryptedFileHeader;
+        JAXBContext jaxbContext = JAXBContext.newInstance(EncryptedFileHeader.class);
+        Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+        encryptedFileHeader = (EncryptedFileHeader) jaxbUnmarshaller.unmarshal(new StringReader(xmlHeader));
+        return encryptedFileHeader;
     }
 }

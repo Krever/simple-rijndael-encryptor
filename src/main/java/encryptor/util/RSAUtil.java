@@ -24,7 +24,7 @@ public class RSAUtil {
         return userKeys.stream()
                 .map(k ->  {
                     try { return new UserAccess(k.getIdentifier(), encryptSessionKey(sessionKey, k.getPublicKey())); }
-                    catch (Exception e) {throw new RuntimeException(e); }
+                    catch (Exception e) {log.error("Error during session key encryption", e);throw new RuntimeException(e); }
                 })
                 .collect(Collectors.toList());
     }

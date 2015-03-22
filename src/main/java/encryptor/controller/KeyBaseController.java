@@ -32,7 +32,7 @@ public class KeyBaseController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        keyBaseDao.reloadKeyBase();
+        keyBaseDao.refreshKeys();
         keyList.getItems().addAll(keyBaseDao.getKeys());
         keyBaseDao.getKeys().addListener((SetChangeListener<UserKey>) change -> {
             if (change.wasAdded())
@@ -67,13 +67,12 @@ public class KeyBaseController implements Initializable {
             }
         }
 
-
         try {
             UserKey userKey = new UserKey(identifier, publicKeyFileField.getText());
             keyBaseDao.addKey(userKey);
         } catch (Exception e) {
             log.debug("Error during adding key to keybase", e);
-            AlertUtil.showErrorI18n(Optional.<String>empty(), Optional.<String>empty());
+            AlertUtil.showGenericError();
         }
     }
 }

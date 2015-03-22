@@ -1,45 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<GridPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8"
-          fx:controller="encryptor.controller.DecryptController">
+
+<GridPane xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="encryptor.controller.DecryptController">
     <columnConstraints>
-        <ColumnConstraints halignment="CENTER" hgrow="NEVER" minWidth="10.0" prefWidth="100.0"/>
-        <ColumnConstraints halignment="LEFT" hgrow="NEVER" maxWidth="181.0" minWidth="10.0" prefWidth="181.0"/>
-        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="84.0" minWidth="9.0" prefWidth="9.0"/>
-        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="159.0" minWidth="10.0" prefWidth="159.0"/>
-        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="67.0" minWidth="10.0" prefWidth="34.0"/>
+        <ColumnConstraints halignment="CENTER" hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints halignment="LEFT" hgrow="NEVER" maxWidth="181.0" minWidth="10.0" prefWidth="181.0" />
+        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="84.0" minWidth="9.0" prefWidth="9.0" />
+        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="159.0" minWidth="10.0" prefWidth="159.0" />
+        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="67.0" minWidth="10.0" prefWidth="34.0" />
     </columnConstraints>
     <rowConstraints>
-        <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="ALWAYS"/>
-        <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="ALWAYS"/>
-        <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="ALWAYS"/>
-        <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="ALWAYS"/>
-        <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="ALWAYS"/>
-        <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="ALWAYS"/>
-        <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="15.0" valignment="CENTER" vgrow="ALWAYS"/>
+        <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="ALWAYS" />
+        <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="ALWAYS" />
+        <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="ALWAYS" />
+        <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="ALWAYS" />
+        <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="ALWAYS" />
+        <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="ALWAYS" />
+        <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="15.0" valignment="CENTER" vgrow="ALWAYS" />
     </rowConstraints>
     <children>
-        <Label text="Hasło" GridPane.rowIndex="3"/>
-        <PasswordField fx:id="passwordField" prefHeight="25.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
-        <CheckBox mnemonicParsing="false" text="Pokaż hasło" GridPane.columnIndex="3" GridPane.columnSpan="2147483647"
-                  GridPane.halignment="LEFT" GridPane.rowIndex="3"/>
-        <Button mnemonicParsing="false" onAction="#decrypt" text="Deszyfruj" GridPane.columnIndex="1"
-                GridPane.rowIndex="5"/>
-        <Label text="Identyfikator" GridPane.rowIndex="1"/>
-        <Label text="Klucz prywatny" GridPane.rowIndex="2"/>
-        <TextField fx:id="privateKeyFileField" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-        <Button mnemonicParsing="false" text="Wybierz" GridPane.columnIndex="3" GridPane.halignment="LEFT"
-                GridPane.rowIndex="2"/>
-        <ComboBox fx:id="identifierCombo" prefHeight="25.0" prefWidth="191.0" GridPane.columnIndex="1"
-                  GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS"/>
-        <Button onAction="#reloadIdentifiers" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false"
-                prefHeight="25.0" prefWidth="25.0" style="-fx-padding: 0;" text="↻" GridPane.columnIndex="3"
-                GridPane.halignment="LEFT" GridPane.rowIndex="1">
+        <Label text="%general.password" GridPane.rowIndex="3" />
+        <PasswordField fx:id="passwordField" prefHeight="25.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+        <CheckBox mnemonicParsing="false" text="%general.showPassword" GridPane.columnIndex="3" GridPane.columnSpan="2147483647" GridPane.halignment="LEFT" GridPane.rowIndex="3" />
+        <Button mnemonicParsing="false" onAction="#decrypt" text="%decrypt.decrypt" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+        <Label text="%general.identifier" GridPane.rowIndex="1" />
+        <Label text="%general.privateKey" GridPane.rowIndex="2" />
+        <TextField fx:id="privateKeyFileField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+        <Button mnemonicParsing="false" text="%general.selectFile" GridPane.columnIndex="3" GridPane.halignment="LEFT" GridPane.rowIndex="2" />
+        <ComboBox fx:id="identifierCombo" prefHeight="25.0" prefWidth="191.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS" />
+        <Button maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#reloadIdentifiers" prefHeight="25.0" prefWidth="25.0" style="-fx-padding: 0;" text="↻" GridPane.columnIndex="3" GridPane.halignment="LEFT" GridPane.rowIndex="1">
             <font>
-                <Font size="18.0"/>
+                <Font size="18.0" />
             </font>
         </Button>
     </children>

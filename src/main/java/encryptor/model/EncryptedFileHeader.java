@@ -8,6 +8,8 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class EncryptedFileHeader {
 
+    public static final String END_TAG = "</encryptedFileHeader>";
+
     @XmlElement
     public final String algorithmName = "Rijndael";
     protected EncryptionMode encryptionMode;
@@ -31,5 +33,21 @@ public class EncryptedFileHeader {
 
     public List<UserAccess> getUsers() {
         return users;
+    }
+
+    public EncryptionMode getEncryptionMode() {
+        return encryptionMode;
+    }
+
+    public int getBlockSize() {
+        return blockSize;
+    }
+
+    public Integer getSegmentSize() {
+        return segmentSize;
+    }
+
+    public byte[] getInitialVector() {
+        return initialVector;
     }
 }

@@ -2,6 +2,8 @@ package encryptor.util;
 
 import encryptor.model.UserAccess;
 import encryptor.model.UserKey;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -16,36 +18,36 @@ import java.util.stream.Collectors;
  */
 public class RSAUtil {
 
-
-    public static final String MODULUS = "d46f473a2d746537de2056ae3092c451";
-
-
+    private static final Logger log = LoggerFactory.getLogger(RSAUtil.class);
 
     public static List<UserAccess> encryptSessionKey(byte[] sessionKey, List<UserKey> userKeys) {
         return userKeys.stream()
-                .map(k -> new UserAccess(k.getIdentifier(), encryptSessionKey(sessionKey, k.getPublicKey())))
+                .map(k ->  {
+                    try { return new UserAccess(k.getIdentifier(), encryptSessionKey(sessionKey, k.getPublicKey())); }
+                    catch (Exception e) {throw new RuntimeException(e); }
+                })
                 .collect(Collectors.toList());
     }
 
-    public static byte[] encryptSessionKey(byte[] sessionKey, PublicKey publicKey) {
+    public static byte[] encryptSessionKey(byte[] sessionKey, PublicKey publicKey) throws InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
         try {
             Cipher cipher = Cipher.getInstance("RSA/None/NoPadding", "BC");
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
             return cipher.doFinal(sessionKey);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | NoSuchProviderException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
-            MyLogger.log(e.toString());
-            throw new RuntimeException("Wystąpił błąd przy szyfrowaniu klucza sesyjnego", e);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | NoSuchProviderException e) {
+            log.error("Error during acquiring cipher", e);
+            throw new RuntimeException(e);
         }
     }
 
-    public static byte[] decryptSessionKey(byte[] encryptedSessionKey, PrivateKey privateKey) {
+    public static byte[] decryptSessionKey(byte[] encryptedSessionKey, PrivateKey privateKey) throws InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
         try {
             Cipher cipher = Cipher.getInstance("RSA/None/NoPadding", "BC");
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
             return cipher.doFinal(encryptedSessionKey);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | NoSuchProviderException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
-            MyLogger.log(e.toString());
-            throw new RuntimeException("Wystąpił błąd przy deszyfrowaniu klucza sesyjnego", e);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | NoSuchProviderException e) {
+            log.error("Error during acquiring cipher", e);
+            throw new RuntimeException(e);
         }
     }
 }

@@ -2,18 +2,23 @@ package encryptor.controller;
 
 import encryptor.model.EncryptedFileHeader;
 import encryptor.model.UserAccess;
-import encryptor.util.MyLogger;
+import encryptor.util.AlertUtil;
+import encryptor.util.I18n;
 import encryptor.util.RSAKeyFilesUtil;
 import encryptor.util.RSAUtil;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.*;
 import java.security.PrivateKey;
+import java.util.Optional;
 
 
 public class DecryptController extends TabController {
@@ -22,22 +27,19 @@ public class DecryptController extends TabController {
     public TextField privateKeyFileField;
     public PasswordField passwordField;
 
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     public void reloadIdentifiers() {
 
         File inputFile = new File(inputFilePathProperty.getValue());
-        if (!inputFile.canRead()) {
-            MyLogger.log("Plik wejściowy nie może być odczytany");
-            return;
-        }
 
         String xmlHeader;
         try {
             FileInputStream inputStream = new FileInputStream(inputFile);
             xmlHeader = readXmlHeader(inputStream);
         } catch (Exception e) {
-            MyLogger.log("Wystąpił błąd podczas wczytywania nagłowka pliku wejściowego");
-            MyLogger.log(e.toString());
+            log.error("Error occured durring reading file header.", e);
+            AlertUtil.showErrorI18n(Optional.<String>empty(), Optional.<String>empty());
             return;
         }
 
@@ -46,8 +48,8 @@ public class DecryptController extends TabController {
             encryptedFileHeader = parseEncryptedFileHeader(xmlHeader);
             System.out.println(encryptedFileHeader);
         } catch (Exception e) {
-            MyLogger.log("Wystapił błąd przy wczytywaniu pliku wejściowego");
-            MyLogger.log(e.toString());
+            log.error("Error occured during parsing of file header", e);
+            AlertUtil.showErrorI18n(Optional.<String>empty(), Optional.<String>empty());
             return;
         }
 
@@ -60,10 +62,6 @@ public class DecryptController extends TabController {
     public void decrypt() {
         try {
             File inputFile = new File(inputFilePathProperty.getValue());
-            if (!inputFile.canRead()) {
-                MyLogger.log("Plik wejściowy nie może być odczytany");
-                return;
-            }
 
             FileInputStream inputStream = new FileInputStream(inputFile);
             String xmlHeader = readXmlHeader(inputStream);
@@ -74,29 +72,26 @@ public class DecryptController extends TabController {
             byte[] sessionKey = RSAUtil.decryptSessionKey(userAccess.getSessionKey(), privateKey);
 
             EncryptedFileHeader encryptedFileHeader = parseEncryptedFileHeader(xmlHeader);
-            //System.out.println(encryptedFileHeader);
             File outputFile = new File(outputFilePathProperty.getValue());
-            rewriteData(inputFile, outputFile);
+            rewriteData(inputFile, outputFile); //TODO
 
         } catch (Exception e) {
-            MyLogger.handleException(e);
+            log.error("Error occured during decryption", e);
+            AlertUtil.showErrorI18n(Optional.<String>empty(), Optional.<String>empty());
         }
 
     }
 
-    private EncryptedFileHeader parseEncryptedFileHeader(String xmlHeader) {
-        try {
-            EncryptedFileHeader encryptedFileHeader;
-            JAXBContext jaxbContext = JAXBContext.newInstance(EncryptedFileHeader.class);
-            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-            encryptedFileHeader = (EncryptedFileHeader) jaxbUnmarshaller.unmarshal(new StringReader(xmlHeader));
-            return encryptedFileHeader;
-        } catch (JAXBException e) {
-            throw new RuntimeException("Problem z parsowaniem nagłówka", e);
-        }
+    private EncryptedFileHeader parseEncryptedFileHeader(String xmlHeader) throws JAXBException {
+
+        EncryptedFileHeader encryptedFileHeader;
+        JAXBContext jaxbContext = JAXBContext.newInstance(EncryptedFileHeader.class);
+        Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+        encryptedFileHeader = (EncryptedFileHeader) jaxbUnmarshaller.unmarshal(new StringReader(xmlHeader));
+        return encryptedFileHeader;
     }
 
-    private void rewriteData(File inputFile, File outputFile) {
+    private void rewriteData(File inputFile, File outputFile) throws IOException {
         try (FileOutputStream outputStream = new FileOutputStream(outputFile);
              FileInputStream inputStream = new FileInputStream(inputFile);
              BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
@@ -114,14 +109,10 @@ public class DecryptController extends TabController {
                 }
 
             }
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException("Nie mozna odnaleźć pliku.", e);
-        } catch (IOException e) {
-            throw new RuntimeException("Problem z dostępem do pliku.", e);
         }
     }
 
-    private String readXmlHeader(FileInputStream inputStream) {
+    private String readXmlHeader(FileInputStream inputStream) throws IOException {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
             String line;
             StringBuilder buffer = new StringBuilder();
@@ -131,8 +122,6 @@ public class DecryptController extends TabController {
                 if (line.startsWith("</encryptedFileHeader>")) break;
             }
             return buffer.toString();
-        } catch (IOException e) {
-            throw new RuntimeException("Problem z odczytaniem pliku wejsciowego", e);
         }
     }
 }

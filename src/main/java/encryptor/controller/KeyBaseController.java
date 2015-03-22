@@ -1,6 +1,7 @@
 package encryptor.controller;
 
 import encryptor.model.UserKey;
+import encryptor.util.AlertUtil;
 import encryptor.util.I18n;
 import encryptor.util.KeyBaseDao;
 import javafx.collections.SetChangeListener;
@@ -72,10 +73,7 @@ public class KeyBaseController implements Initializable {
             keyBaseDao.addKey(userKey);
         } catch (Exception e) {
             log.debug("Error during adding key to keybase", e);
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle(I18n.resourceBundle.getString("general.error.title"));
-            alert.setContentText(I18n.resourceBundle.getString("keybase.add.error.text"));
-            alert.showAndWait();
+            AlertUtil.showErrorI18n(Optional.<String>empty(), Optional.<String>empty());
         }
     }
 }

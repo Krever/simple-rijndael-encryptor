@@ -24,6 +24,7 @@ import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static java.util.stream.Collectors.toList;
@@ -71,7 +72,6 @@ public class EncryptController extends TabController implements Initializable {
         File inputFile = new File(inputFilePathProperty.getValue());
         File outputFile = new File(outputFilePathProperty.getValue());
 
-
         byte[] sessionKey = Rijndael.generateSessionKey(keyLengthCombo.getValue());
         byte[] initialVector = Rijndael.generateInitialVector(blockLengthCombo.getValue());
         List<UserAccess> accesses = RSAUtil.encryptSessionKey(sessionKey, receiverList.getItems());
@@ -97,6 +97,8 @@ public class EncryptController extends TabController implements Initializable {
             AlertUtil.showGenericError();
             return;
         }
+
+        AlertUtil.showInfoI18n(Optional.<String>empty(), "encrypt.ok.text");
 
     }
 

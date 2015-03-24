@@ -31,13 +31,14 @@ public class RSAKeyFilesUtil {
             fos.close();
     }
 
-    public static void savePrivateKey(PrivateKey privateKey, String filePath) throws IOException {
+    public static void savePrivateKey(PrivateKey privateKey, String password, String filePath) throws IOException {
             File file = new File(filePath);
             file.getParentFile().mkdirs();
             FileOutputStream fos = new FileOutputStream(file);
-            PKCS8EncodedKeySpec pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(
-                    privateKey.getEncoded());
-            fos.write(pkcs8EncodedKeySpec.getEncoded());
+
+            byte[] encryptedKey = Rijndael.encryptPrivateKey(privateKey, password);
+
+            fos.write(encryptedKey);
             fos.close();
     }
 
@@ -64,8 +65,9 @@ public class RSAKeyFilesUtil {
             dis.readFully(keyBytes);
             dis.close();
 
-            PKCS8EncodedKeySpec spec =
-                    new PKCS8EncodedKeySpec(keyBytes);
+            byte[] decryptedKeyBytes = Rijndael.decryptPrivateKey(keyBytes, password);
+
+            PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(decryptedKeyBytes);
             KeyFactory kf = KeyFactory.getInstance("RSA");
             return kf.generatePrivate(spec);
         } catch (Exception e) {

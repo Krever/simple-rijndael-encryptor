@@ -52,9 +52,9 @@ public class MainController implements Initializable {
 
     public void generateKeys() throws IOException {
         final Stage stage = new Stage();
-        Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("keygen.fxml"));
+        Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("keygen.fxml"), I18n.resourceBundle);
         stage.setScene(new Scene(root));
-        stage.setTitle("Wygeneruj parę kluczy RSA");
+        stage.setTitle(I18n.resourceBundle.getString("keygen.title"));
         stage.show();
     }
 

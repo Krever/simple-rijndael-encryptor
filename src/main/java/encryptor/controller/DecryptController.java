@@ -6,6 +6,8 @@ import encryptor.util.AlertUtil;
 import encryptor.util.RSAKeyFilesUtil;
 import encryptor.util.RSAUtil;
 import encryptor.util.Rijndael;
+import javafx.event.ActionEvent;
+import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -16,17 +18,27 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.*;
+import java.net.URL;
 import java.security.PrivateKey;
+import java.util.Arrays;
 import java.util.Optional;
+import java.util.ResourceBundle;
 
 
-public class DecryptController extends TabController {
+public class DecryptController extends TabController implements Initializable{
 
     public ComboBox<UserAccess> identifierCombo;
     public TextField privateKeyFileField;
     public PasswordField passwordField;
+    public TextField passwordTextField;
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        passwordField.textProperty().bindBidirectional(passwordTextField.textProperty());
+        passwordTextField.setVisible(false);
+    }
 
     public void reloadIdentifiers() {
         File inputFile = new File(inputFilePathProperty.getValue());
@@ -56,6 +68,7 @@ public class DecryptController extends TabController {
             byte[] sessionKey = RSAUtil.decryptSessionKey(userAccess.getSessionKey(), privateKey);
 
             File outputFile = new File(outputFilePathProperty.getValue());
+            System.out.println(Arrays.toString(sessionKey));
             Rijndael.decrypt(inputFile, outputFile, sessionKey, header);
 
         } catch (Exception e) {
@@ -84,5 +97,11 @@ public class DecryptController extends TabController {
         Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
         encryptedFileHeader = (EncryptedFileHeader) jaxbUnmarshaller.unmarshal(new StringReader(xmlHeader));
         return encryptedFileHeader;
+    }
+
+    public void showPassword() {
+        boolean visible = passwordTextField.isVisible();
+        passwordTextField.setVisible(!visible);
+        passwordField.setVisible(visible);
     }
 }

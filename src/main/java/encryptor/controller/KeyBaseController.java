@@ -6,10 +6,7 @@ import encryptor.util.I18n;
 import encryptor.util.KeyBaseDao;
 import javafx.collections.SetChangeListener;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import lombok.val;
 import org.slf4j.Logger;
@@ -34,6 +31,7 @@ public class KeyBaseController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         keyBaseDao.refreshKeys();
         keyList.getItems().addAll(keyBaseDao.getKeys());
+        keyList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         keyBaseDao.getKeys().addListener((SetChangeListener<UserKey>) change -> {
             if (change.wasAdded())
                 keyList.getItems().add(change.getElementAdded());
@@ -45,6 +43,7 @@ public class KeyBaseController implements Initializable {
     public void removeKey() {
         val selectedKeys = keyList.getSelectionModel().getSelectedItems();
         keyBaseDao.removeKeys(selectedKeys);
+        keyBaseDao.refreshKeys();
     }
 
     public void selectKeyFile() {

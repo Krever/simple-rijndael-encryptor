@@ -29,4 +29,14 @@ public class AlertUtil {
         showErrorI18n(Optional.<String>empty(), Optional.<String>empty());
     }
 
+    public static void showInfoI18n(Optional<String> headerProperty,String messageProperty) {
+        String header = headerProperty.isPresent() ? I18n.resourceBundle.getString(headerProperty.get()) : null;
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(I18n.resourceBundle.getString("general.info.title"));
+        alert.setHeaderText(header);
+        alert.setContentText(I18n.resourceBundle.getString(messageProperty));
+        alert.show();
+    }
+
 }

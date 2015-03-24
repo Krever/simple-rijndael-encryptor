@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import java.lang.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 
-<GridPane xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="encryptor.controller.DecryptController">
+<GridPane hgap="5.0" vgap="5.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="encryptor.controller.DecryptController">
     <columnConstraints>
-        <ColumnConstraints halignment="CENTER" hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
-        <ColumnConstraints halignment="LEFT" hgrow="NEVER" maxWidth="181.0" minWidth="10.0" prefWidth="181.0" />
-        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="84.0" minWidth="9.0" prefWidth="9.0" />
+        <ColumnConstraints halignment="CENTER" hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
+        <ColumnConstraints halignment="LEFT" hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="250.0" />
         <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="159.0" minWidth="10.0" prefWidth="159.0" />
         <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="67.0" minWidth="10.0" prefWidth="34.0" />
     </columnConstraints>
@@ -26,17 +26,21 @@
     <children>
         <Label text="%general.password" GridPane.rowIndex="3" />
         <PasswordField fx:id="passwordField" prefHeight="25.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-        <CheckBox mnemonicParsing="false" text="%general.showPassword" GridPane.columnIndex="3" GridPane.columnSpan="2147483647" GridPane.halignment="LEFT" GridPane.rowIndex="3" />
+        <TextField fx:id="passwordTextField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+        <CheckBox mnemonicParsing="false" onAction="#showPassword" text="%general.showPassword" GridPane.columnIndex="2" GridPane.columnSpan="2147483647" GridPane.halignment="LEFT" GridPane.rowIndex="3" />
         <Button mnemonicParsing="false" onAction="#decrypt" text="%decrypt.decrypt" GridPane.columnIndex="1" GridPane.rowIndex="5" />
         <Label text="%general.identifier" GridPane.rowIndex="1" />
         <Label text="%general.privateKey" GridPane.rowIndex="2" />
         <TextField fx:id="privateKeyFileField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-        <Button mnemonicParsing="false" text="%general.selectFile" GridPane.columnIndex="3" GridPane.halignment="LEFT" GridPane.rowIndex="2" />
+        <Button mnemonicParsing="false" text="%general.selectFile" GridPane.columnIndex="2" GridPane.halignment="LEFT" GridPane.rowIndex="2" />
         <ComboBox fx:id="identifierCombo" prefHeight="25.0" prefWidth="191.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS" />
-        <Button maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#reloadIdentifiers" prefHeight="25.0" prefWidth="25.0" style="-fx-padding: 0;" text="↻" GridPane.columnIndex="3" GridPane.halignment="LEFT" GridPane.rowIndex="1">
+        <Button maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#reloadIdentifiers" prefHeight="25.0" prefWidth="25.0" style="-fx-padding: 0;" text="↻" GridPane.columnIndex="2" GridPane.halignment="LEFT" GridPane.rowIndex="1">
             <font>
                 <Font size="18.0" />
             </font>
         </Button>
     </children>
+    <padding>
+      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+   </padding>
 </GridPane>

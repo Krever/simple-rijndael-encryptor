@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.security.KeyPair;
+import java.util.Optional;
 
 /**
  * Created by Wojtek on 2015-03-15.
@@ -41,6 +42,10 @@ public class KeygenController {
 
     public void generate() {
 
+        if(! passwordField.getText().equals(passwordConfirmField.getText())){
+            AlertUtil.showErrorI18n(Optional.<String>empty(), Optional.of("generate.passwordMatch.error.text"));
+        }
+
         lockControls(true);
 
         Task<Void> task = new Task<Void>() {
@@ -48,7 +53,7 @@ public class KeygenController {
             public Void call() throws IOException {
                 KeyPair keyPair = RSAKeyFilesUtil.generateKeyPair();
                 RSAKeyFilesUtil.savePublicKey(keyPair.getPublic(), publicKeyFileField.getText());
-                RSAKeyFilesUtil.savePrivateKey(keyPair.getPrivate(), privateKeyFileField.getText());
+                RSAKeyFilesUtil.savePrivateKey(keyPair.getPrivate(), passwordField.getText(), privateKeyFileField.getText());
                 return null;
             }
         };
@@ -75,10 +80,6 @@ public class KeygenController {
     }
 
     private void showOkDialog()  {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Information");
-        alert.setHeaderText(null);
-        alert.setContentText(I18n.resourceBundle.getString("keygen.generate.ok.text"));
-        alert.show();
+        AlertUtil.showInfoI18n(Optional.<String>empty(), "keygen.generate.ok.text");
     }
 }

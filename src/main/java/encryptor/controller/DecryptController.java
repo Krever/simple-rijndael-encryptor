@@ -6,11 +6,13 @@ import encryptor.util.AlertUtil;
 import encryptor.util.RSAKeyFilesUtil;
 import encryptor.util.RSAUtil;
 import encryptor.util.Rijndael;
-import javafx.event.ActionEvent;
+import javafx.concurrent.Task;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
+import javafx.stage.FileChooser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,6 +33,7 @@ public class DecryptController extends TabController implements Initializable{
     public TextField privateKeyFileField;
     public PasswordField passwordField;
     public TextField passwordTextField;
+    public ProgressBar progressBar;
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -38,6 +41,7 @@ public class DecryptController extends TabController implements Initializable{
     public void initialize(URL location, ResourceBundle resources) {
         passwordField.textProperty().bindBidirectional(passwordTextField.textProperty());
         passwordTextField.setVisible(false);
+        inputFilePathProperty.addListener((observable, oldValue, newValue) -> identifierCombo.getItems().clear());
     }
 
     public void reloadIdentifiers() {
@@ -69,12 +73,24 @@ public class DecryptController extends TabController implements Initializable{
 
             File outputFile = new File(outputFilePathProperty.getValue());
             System.out.println(Arrays.toString(sessionKey));
-            Rijndael.decrypt(inputFile, outputFile, sessionKey, header);
+
+
+            Task<Void> decryptTask = Rijndael.decryptTask(inputFile, outputFile, sessionKey, header);
+            decryptTask.setOnSucceeded(event -> AlertUtil.showInfoI18n(Optional.<String>empty(), "decrypt.ok.text"));
+            decryptTask.setOnFailed(event -> {
+                log.error("Error occured durring decryption", event.getSource().getException());
+                AlertUtil.showGenericError();
+            });
+            progressBar.progressProperty().unbind();
+            progressBar.progressProperty().bind(decryptTask.progressProperty());
+
+            new Thread(decryptTask).start();
 
         } catch (Exception e) {
-            log.error("Error occured during decryption", e);
+            log.error("Error occured before decryption", e);
             AlertUtil.showGenericError();
         }
+
 
     }
 
@@ -103,5 +119,10 @@ public class DecryptController extends TabController implements Initializable{
         boolean visible = passwordTextField.isVisible();
         passwordTextField.setVisible(!visible);
         passwordField.setVisible(visible);
+    }
+
+    public void selectKeyFile() {
+        File file = (new FileChooser()).showOpenDialog(null);
+        privateKeyFileField.setText(file.getAbsolutePath());
     }
 }

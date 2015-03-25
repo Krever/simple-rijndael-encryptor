@@ -20,6 +20,17 @@ public class RSAUtil {
 
     private static final Logger log = LoggerFactory.getLogger(RSAUtil.class);
 
+    public static KeyPair generateKeyPair() {
+        try {
+            SecureRandom random = new SecureRandom();
+            KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA", "BC");
+            generator.initialize(2048, random);
+            return generator.generateKeyPair();
+        } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
+            throw new RuntimeException("Algorith could not be acquired", e);
+        }
+    }
+
     public static List<UserAccess> encryptSessionKey(byte[] sessionKey, List<UserKey> userKeys) {
         return userKeys.stream()
                 .map(k ->  {

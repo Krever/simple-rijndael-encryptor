@@ -11,17 +11,6 @@ import java.security.spec.X509EncodedKeySpec;
  */
 public class RSAKeyFilesUtil {
 
-    public static KeyPair generateKeyPair() {
-        try {
-            SecureRandom random = new SecureRandom();
-            KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA", "BC");
-            generator.initialize(2048, random);
-            return generator.generateKeyPair();
-        } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
-            throw new RuntimeException("Algorith could not be acquired", e);
-        }
-    }
-
     public static void savePublicKey(PublicKey publicKey, String filePath) throws IOException {
             File file = new File(filePath);
             file.getParentFile().mkdirs();

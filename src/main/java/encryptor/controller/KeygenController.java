@@ -1,8 +1,8 @@
 package encryptor.controller;
 
 import encryptor.util.AlertUtil;
-import encryptor.util.I18n;
 import encryptor.util.RSAKeyFilesUtil;
+import encryptor.util.RSAUtil;
 import javafx.concurrent.Task;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
@@ -51,7 +51,7 @@ public class KeygenController {
         Task<Void> task = new Task<Void>() {
             @Override
             public Void call() throws IOException {
-                KeyPair keyPair = RSAKeyFilesUtil.generateKeyPair();
+                KeyPair keyPair = RSAUtil.generateKeyPair();
                 RSAKeyFilesUtil.savePublicKey(keyPair.getPublic(), publicKeyFileField.getText());
                 RSAKeyFilesUtil.savePrivateKey(keyPair.getPrivate(), passwordField.getText(), privateKeyFileField.getText());
                 return null;

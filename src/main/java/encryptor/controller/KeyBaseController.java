@@ -4,6 +4,7 @@ import encryptor.model.UserKey;
 import encryptor.util.AlertUtil;
 import encryptor.util.I18n;
 import encryptor.util.KeyBaseDao;
+import javafx.collections.ObservableList;
 import javafx.collections.SetChangeListener;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -14,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.URL;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -41,7 +43,7 @@ public class KeyBaseController implements Initializable {
     }
 
     public void removeKey() {
-        val selectedKeys = keyList.getSelectionModel().getSelectedItems();
+        ObservableList<UserKey> selectedKeys = keyList.getSelectionModel().getSelectedItems();
         keyBaseDao.removeKeys(selectedKeys);
         keyBaseDao.refreshKeys();
     }

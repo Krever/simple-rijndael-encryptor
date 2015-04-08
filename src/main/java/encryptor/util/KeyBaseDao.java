@@ -27,7 +27,7 @@ public class KeyBaseDao {
         if (!baseDir.exists())
             baseDir.mkdirs();
 
-        val subDirs = baseDir.listFiles(File::isDirectory);
+        File[] subDirs = baseDir.listFiles(File::isDirectory);
 
         keyBase.clear();
         for (File subDir : subDirs) {

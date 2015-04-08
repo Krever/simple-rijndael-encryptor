@@ -33,7 +33,7 @@
         <Label text="%encrypt.blockSize" GridPane.rowIndex="3" />
         <ComboBox fx:id="encryptionModeCombo" prefWidth="80.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
         <ComboBox fx:id="keyLengthCombo" prefWidth="80.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-        <Button mnemonicParsing="false" onAction="#encrypt" text="%encrypt.encrypt" GridPane.rowIndex="7" />
+        <Button  fx:id="encryptButton" mnemonicParsing="false" onAction="#encrypt" text="%encrypt.encrypt" GridPane.rowIndex="7" />
         <ComboBox fx:id="blockSizeCombo" editable="false" prefWidth="80.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
       <Separator orientation="VERTICAL" prefHeight="200.0" GridPane.columnIndex="2" GridPane.rowSpan="6" />
         <Label text="%encrypt.receivers" GridPane.columnIndex="5" />

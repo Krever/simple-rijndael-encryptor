@@ -59,8 +59,8 @@ public class Rijndael {
         return new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-                try (OutputStream outputStream = new FileOutputStream(outputFile, true);
-                     FileInputStream inputStream = new FileInputStream(inputFile)) {
+                try (OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(outputFile, true));
+                     InputStream inputStream = new BufferedInputStream(new FileInputStream(inputFile))) {
 
                     EncryptionMode mode = header.getEncryptionMode();
 
@@ -75,12 +75,16 @@ public class Rijndael {
                     CipherOutputStream cipherOutputStream = new CipherOutputStream(new Base64OutputStream(outputStream), blockCipher);
                     byte[] buf = new byte[1024];
                     int bytesRead;
-                    int bytesReadSum = 0;
-                    long fileLength = inputFile.length();
+                    long bytesReadSum = 0;
+                    double fileLength = inputFile.length();
+                    double checkpoint = fileLength/100;
                     while ((bytesRead = inputStream.read(buf)) >= 0) {
                         cipherOutputStream.write(buf, 0, bytesRead);
                         bytesReadSum += bytesRead;
-                        updateProgress(bytesReadSum, fileLength);
+                        if(bytesReadSum>checkpoint) {
+                            updateProgress((double)bytesReadSum/fileLength, 1.0);
+                            checkpoint += fileLength/100;
+                        }
                     }
 
                     cipherOutputStream.close();
@@ -122,11 +126,15 @@ public class Rijndael {
                     byte[] buf = new byte[1024];
                     int bytesRead;
                     int bytesReadSum = 0;
-                    long fileLength = (long) (inputFile.length()/1.37); //base64 size growth multiplier
+                    double fileLength = inputFile.length()/1.37; //base64 size growth multiplier
+                    double checkpoint = fileLength/100;
                     while ((bytesRead = cipherInputStream.read(buf)) >= 0) {
                         outputStream.write(buf, 0, bytesRead);
                         bytesReadSum += bytesRead;
-                        updateProgress(bytesReadSum, fileLength);
+                        if(bytesReadSum>checkpoint) {
+                            updateProgress((double)bytesReadSum/fileLength, 1.0);
+                            checkpoint += fileLength/100;
+                        }
                     }
                     cipherInputStream.close();
                 }

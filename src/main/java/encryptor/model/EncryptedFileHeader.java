@@ -13,6 +13,7 @@ public class EncryptedFileHeader {
     @XmlElement
     public final String algorithmName = "Rijndael";
     protected EncryptionMode encryptionMode;
+    protected int keyLength;
     protected int blockSize;
     @XmlElement(required = false, nillable = true)
     protected Integer segmentSize;
@@ -23,12 +24,13 @@ public class EncryptedFileHeader {
 
     public EncryptedFileHeader() {}
 
-    public EncryptedFileHeader(EncryptionMode encryptionMode, int blockSize, Integer segmentSize, byte[] initialVector, List<UserAccess> users) {
+    public EncryptedFileHeader(EncryptionMode encryptionMode, int blockSize, Integer segmentSize, byte[] initialVector, List<UserAccess> users, int keyLength) {
         this.encryptionMode = encryptionMode;
         this.blockSize = blockSize;
         this.segmentSize = segmentSize;
         this.initialVector = initialVector;
         this.users = users;
+        this.keyLength = keyLength;
     }
 
     public List<UserAccess> getUsers() {
@@ -50,4 +52,6 @@ public class EncryptedFileHeader {
     public byte[] getInitialVector() {
         return initialVector;
     }
+
+
 }

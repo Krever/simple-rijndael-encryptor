@@ -15,7 +15,7 @@ import java.io.IOException;
 
 public class KeyBaseDao {
 
-    private static final String keyBaseDirPath = System.getProperty("user.home") + "/.simple-aes-encryptor/key-base";
+    private static final String keyBaseDirPath = System.getProperty("user.home") + "/.simple-rijndael-encryptor/key-base";
     private static final String publicKeyFileName = "public.key";
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());

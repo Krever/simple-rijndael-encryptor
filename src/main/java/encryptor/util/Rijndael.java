@@ -7,9 +7,9 @@ import org.apache.commons.codec.binary.Base64InputStream;
 import org.apache.commons.codec.binary.Base64OutputStream;
 import org.apache.commons.io.input.ReaderInputStream;
 import org.bouncycastle.crypto.BlockCipher;
+import org.bouncycastle.crypto.BufferedBlockCipher;
 import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.engines.RijndaelEngine;
-import org.bouncycastle.crypto.io.*;
 import org.bouncycastle.crypto.io.CipherInputStream;
 import org.bouncycastle.crypto.io.CipherOutputStream;
 import org.bouncycastle.crypto.modes.CBCBlockCipher;
@@ -22,8 +22,10 @@ import org.bouncycastle.crypto.params.ParametersWithIV;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.crypto.*;
-import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.security.*;
@@ -64,7 +66,7 @@ public class Rijndael {
 
                     EncryptionMode mode = header.getEncryptionMode();
 
-                    PaddedBufferedBlockCipher blockCipher = createCipher(header.getBlockSize(), header.getEncryptionMode(), header.getSegmentSize());
+                    BufferedBlockCipher blockCipher = createCipher(header.getBlockSize(), header.getEncryptionMode(), header.getSegmentSize(), false);
                     CipherParameters parameters;
                     if (EncryptionMode.ECB.equals(mode))
                         parameters = new KeyParameter(sessionKeyBytes);
@@ -77,13 +79,13 @@ public class Rijndael {
                     int bytesRead;
                     long bytesReadSum = 0;
                     double fileLength = inputFile.length();
-                    double checkpoint = fileLength/100;
+                    double checkpoint = fileLength / 100;
                     while ((bytesRead = inputStream.read(buf)) >= 0) {
                         cipherOutputStream.write(buf, 0, bytesRead);
                         bytesReadSum += bytesRead;
-                        if(bytesReadSum>checkpoint) {
-                            updateProgress((double)bytesReadSum/fileLength, 1.0);
-                            checkpoint += fileLength/100;
+                        if (bytesReadSum > checkpoint) {
+                            updateProgress((double) bytesReadSum / fileLength, 1.0);
+                            checkpoint += fileLength / 100;
                         }
                     }
 
@@ -106,19 +108,21 @@ public class Rijndael {
                     String line;
                     while (true) {
                         line = br.readLine();
-                        if(line == null)
-                            throw new RuntimeException("Invalid file header. Header should end with "+EncryptedFileHeader.END_TAG);
+                        if (line == null)
+                            throw new RuntimeException("Invalid file header. Header should end with " + EncryptedFileHeader.END_TAG);
                         if (line.startsWith(EncryptedFileHeader.END_TAG))
                             break;
                     }
                     EncryptionMode mode = header.getEncryptionMode();
 
-                    PaddedBufferedBlockCipher blockCipher = createCipher(header.getBlockSize(), header.getEncryptionMode(), header.getSegmentSize());
+                    boolean cheater = sessionKeyBytes.length != header.getKeyLength() / 8;
+                    BufferedBlockCipher blockCipher = createCipher(header.getBlockSize(), header.getEncryptionMode(), header.getSegmentSize(), cheater);
                     CipherParameters parameters;
+                    byte[] trimmedSessionKeyBytes = Arrays.copyOf(sessionKeyBytes, header.getKeyLength() / 8);
                     if (EncryptionMode.ECB.equals(mode))
-                        parameters = new KeyParameter(sessionKeyBytes);
+                        parameters = new KeyParameter(trimmedSessionKeyBytes);
                     else
-                        parameters = new ParametersWithIV(new KeyParameter(sessionKeyBytes), header.getInitialVector());
+                        parameters = new ParametersWithIV(new KeyParameter(trimmedSessionKeyBytes), header.getInitialVector());
                     blockCipher.init(false, parameters);
 
 
@@ -126,16 +130,17 @@ public class Rijndael {
                     byte[] buf = new byte[1024];
                     int bytesRead;
                     int bytesReadSum = 0;
-                    double fileLength = inputFile.length()/1.37; //base64 size growth multiplier
-                    double checkpoint = fileLength/100;
+                    double fileLength = inputFile.length() / 1.37; //base64 size growth multiplier
+                    double checkpoint = fileLength / 100;
                     while ((bytesRead = cipherInputStream.read(buf)) >= 0) {
                         outputStream.write(buf, 0, bytesRead);
                         bytesReadSum += bytesRead;
-                        if(bytesReadSum>checkpoint) {
-                            updateProgress((double)bytesReadSum/fileLength, 1.0);
-                            checkpoint += fileLength/100;
+                        if (bytesReadSum > checkpoint) {
+                            updateProgress((double) bytesReadSum / fileLength, 1.0);
+                            checkpoint += fileLength / 100;
                         }
                     }
+                    updateProgress(1.0, 1.0);
                     cipherInputStream.close();
                 }
                 return null;
@@ -143,22 +148,30 @@ public class Rijndael {
         };
     }
 
-    private static PaddedBufferedBlockCipher createCipher(int blockSize, EncryptionMode encryptionMode, Integer segmentSize) {
+    private static BufferedBlockCipher createCipher(int blockSize, EncryptionMode encryptionMode, Integer segmentSize, boolean cheater) {
         RijndaelEngine engine = new RijndaelEngine(blockSize);
         PKCS7Padding padding = new PKCS7Padding();
 
+        BlockCipher cipherWithoutPadding;
         switch (encryptionMode) {
             case ECB:
-                return new PaddedBufferedBlockCipher(engine, padding);
+                cipherWithoutPadding = engine;
+                break;
             case CBC:
-                return new PaddedBufferedBlockCipher(new CBCBlockCipher(engine), padding);
+                cipherWithoutPadding = new CBCBlockCipher(engine);
+                break;
             case CFB:
-                return new PaddedBufferedBlockCipher(new CFBBlockCipher(engine, segmentSize), padding);
+                cipherWithoutPadding = new CFBBlockCipher(engine, segmentSize);
+                break;
             case OFB:
-                return new PaddedBufferedBlockCipher(new OFBBlockCipher(engine, segmentSize), padding);
+                cipherWithoutPadding = new OFBBlockCipher(engine, segmentSize);
+                break;
             default:
-                throw new RuntimeException("Wrong encryption mode: "+encryptionMode);
+                throw new RuntimeException("Wrong encryption mode: " + encryptionMode);
         }
+
+        if (cheater) return new BufferedBlockCipher(cipherWithoutPadding);
+        else return new PaddedBufferedBlockCipher(cipherWithoutPadding, padding);
     }
 
     public static byte[] encryptPrivateKey(PrivateKey key, String password) {
@@ -198,8 +211,8 @@ public class Rijndael {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         md.update(password.getBytes());
         byte[] paswordHash = md.digest();
-        byte[] first128bytes = Arrays.copyOfRange(paswordHash, 0, 16);
-        return new SecretKeySpec(first128bytes, "Rijndael");
+        byte[] first128bits = Arrays.copyOfRange(paswordHash, 0, 16);
+        return new SecretKeySpec(first128bits, "Rijndael");
     }
 
 

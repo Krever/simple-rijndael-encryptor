@@ -53,5 +53,7 @@ public class EncryptedFileHeader {
         return initialVector;
     }
 
-
+    public int getKeyLength() {
+        return keyLength;
+    }
 }

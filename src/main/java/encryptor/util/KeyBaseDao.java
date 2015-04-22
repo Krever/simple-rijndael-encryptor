@@ -17,6 +17,7 @@ public class KeyBaseDao {
 
     private static final String keyBaseDirPath = System.getProperty("user.home") + "/.simple-rijndael-encryptor/key-base";
     private static final String publicKeyFileName = "public.key";
+    private static final String privateKeyFileName = "private.key";
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -46,6 +47,10 @@ public class KeyBaseDao {
 
     public ObservableSet<UserKey> getKeys() {
         return FXCollections.unmodifiableObservableSet(keyBase);
+    }
+
+    public static String getPrivateKeyPath(String identifier) {
+        return new File(new File(keyBaseDirPath, identifier), privateKeyFileName).getAbsolutePath();
     }
 
 

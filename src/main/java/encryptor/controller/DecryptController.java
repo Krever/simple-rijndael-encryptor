@@ -2,10 +2,7 @@ package encryptor.controller;
 
 import encryptor.model.EncryptedFileHeader;
 import encryptor.model.UserAccess;
-import encryptor.util.AlertUtil;
-import encryptor.util.RSAKeyFilesUtil;
-import encryptor.util.RSAUtil;
-import encryptor.util.Rijndael;
+import encryptor.util.*;
 import javafx.concurrent.Task;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
@@ -42,6 +39,9 @@ public class DecryptController extends TabController implements Initializable{
         passwordField.textProperty().bindBidirectional(passwordTextField.textProperty());
         passwordTextField.setVisible(false);
         inputFilePathProperty.addListener((observable, oldValue, newValue) -> identifierCombo.getItems().clear());
+        identifierCombo.valueProperty().addListener((observable, oldValue, newValue) -> {
+            privateKeyFileField.setText(KeyBaseDao.getPrivateKeyPath(newValue.getIdentifier()));
+        });
     }
 
     public void reloadIdentifiers() {

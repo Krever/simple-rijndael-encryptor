@@ -4,8 +4,10 @@ import encryptor.model.UserKey;
 import encryptor.util.AlertUtil;
 import encryptor.util.I18n;
 import encryptor.util.KeyBaseDao;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.SetChangeListener;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
@@ -15,9 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.URL;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * Created by krever on 3/21/15.
@@ -32,7 +32,9 @@ public class KeyBaseController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         keyBaseDao.refreshKeys();
-        keyList.getItems().addAll(keyBaseDao.getKeys());
+        List<UserKey> sortedKeys = new LinkedList<>(keyBaseDao.getKeys());
+        sortedKeys.sort((o1, o2) -> o1.getIdentifier().compareTo(o2.getIdentifier()));
+        keyList.getItems().addAll(sortedKeys);
         keyList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         keyBaseDao.getKeys().addListener((SetChangeListener<UserKey>) change -> {
             if (change.wasAdded())
